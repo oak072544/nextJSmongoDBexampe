@@ -5,14 +5,22 @@ function index() {
   const [name, setName] = useState("");
   const [link, setLink] = useState("");
   const [image, setImage] = useState("");
-  const [role, setRole] = useState("");
+  const [role, setRole] = useState({
+    student: false,
+    echange_student: false,
+    alumni: false,
+    personel: false,
+    retirement: false,
+    templecturer: false,
+  });
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    if (name && link) { //เงื่อนไขอาจจะเหลือแค่เช็คชื่อ
+    if (name && link) {
+      //เงื่อนไขอาจจะเหลือแค่เช็คชื่อ
       try {
         let response = await fetch("http://localhost:3000/api/addService", {
           method: "POST",
@@ -21,8 +29,6 @@ function index() {
             image: image,
             role: role,
             link: link,
-
-
           }),
           headers: {
             Accept: "application/json , text/plain, */*",
@@ -35,7 +41,14 @@ function index() {
         setName("");
         setLink("");
         setImage("");
-        setRole("");
+        setRole({
+          student: false,
+          echange_student: false,
+          alumni: false,
+          personel: false,
+          retirement: false,
+          templecturer: false,
+        });
         setError("");
         setMessage("Service added successfully!");
       } catch (errorMessage: any) {
@@ -52,7 +65,9 @@ function index() {
         {error ? <div className="alert-error">{error}</div> : null}
         {message ? <div className="alert-message">{message}</div> : null}
 
-        <div className="form-group"> {/*Name*/}
+        <div className="form-group">
+          {" "}
+          {/*Name*/}
           <label htmlFor="name">Name</label>
           <input
             name="name"
@@ -63,7 +78,9 @@ function index() {
           />
         </div>
 
-        <div className="form-group"> {/*Link*/}
+        <div className="form-group">
+          {" "}
+          {/*Link*/}
           <label htmlFor="link">Link</label>
           <textarea
             name="link"
@@ -75,7 +92,9 @@ function index() {
           ></textarea>
         </div>
 
-        <div className="form-group"> {/*Image*/}
+        <div className="form-group">
+          {" "}
+          {/*Image*/}
           <label htmlFor="image">Image</label>
           <input
             name="image"
@@ -86,7 +105,8 @@ function index() {
           />
         </div>
 
-        <div className="form-group"> {/*Role*/}
+        {/*
+        <div className="form-group"> //Role
           <label htmlFor="role">Role</label>
           <input
             name="role"
@@ -96,8 +116,32 @@ function index() {
             value={role}
           />
         </div>
+        */}
 
-        <div className="form-group"> {/*Submit*/}
+        <div className="form-group">
+          <label>Role</label>
+          {Object.keys(role).map((r, index) => (
+            <div key={index}>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={role[r]}
+                  onChange={(e) => {
+                    setRole((prevRoles) => ({
+                      ...prevRoles,
+                      [r]: e.target.checked,
+                    }));
+                  }}
+                />
+                {r}
+              </label>
+            </div>
+          ))}
+        </div>
+
+        <div className="form-group">
+          {" "}
+          {/*Submit*/}
           <button type="submit" className="submit_btn">
             Add Service
           </button>

@@ -12,13 +12,12 @@ type Props = {
 };
 
 type Service = {
-    _id: String;
-    name: String;
-    image: String; //หาประเภทมา
-    role : String; //น่าจะมาแก้เป็น Array เก็บ boolean ทีหลัง
-    link : String;
+  _id: string;
+  name: string;
+  image: string;
+  role: { [key: string]: boolean }; // Update the type to object with key-value pairs
+  link: string;
 };
-
 
 export async function getServerSideProps() {
   try {
@@ -36,21 +35,24 @@ export async function getServerSideProps() {
 export default function Home(props: Props) {
   const [collec, setCollec] = useState<[Service]>(props.collec);
 
-  const handleDeletePost = async(serviceId:string) => {
+  const handleDeletePost = async (serviceId: string) => {
     try {
-      let response =await fetch("http://localhost:3000/api/deleteService?id=" + serviceId,{
-        method:"POST",
-        headers:{
-          Accept:"application/json, text/plain, */*",
-          "Content-Type":"application/json"
+      let response = await fetch(
+        "http://localhost:3000/api/deleteService?id=" + serviceId,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json, text/plain, */*",
+            "Content-Type": "application/json",
+          },
         }
-      })
+      );
       response = await response.json();
       window.location.reload();
     } catch (error) {
       console.log("An error occured while deleting", error);
     }
-  }
+  };
   return (
     <div className="container">
       <Head>
@@ -59,23 +61,36 @@ export default function Home(props: Props) {
       </Head>
 
       <Layout>
-        <div className="posts-body"> {/* Post body */}
+        <div className="posts-body">
+          {" "}
+          {/* Post body */}
           <h1 className="posts-body-heading">Services</h1>
           {collec?.length > 0 ? (
             <ul className="posts-list">
               {collec.map((service, index) => {
                 return (
                   <li key={index} className="post-item">
+
                     <div className="post-item-details">
                       <h2>{service.name}</h2>
                       <a href={`${service.link}`}>{service.link}</a>
-                      <br />
-                      <img src={`${service.image}`} alt={`${service.image}`}></img>
-                      <p>{service.role}</p>
+                      <img src={`${service.image}`} alt={`${service.image}`} />
+                      <ul>
+                        {Object.keys(service.role).map((role, index) => (
+                          <li key={index}>
+                            {role}: {service.role[role] ? "true" : "false"}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
+
                     <div className="post-item-actions">
                       <a href={`/service/${service._id}`}>Edit</a>
-                      <button onClick={() => handleDeletePost(service._id as string)}>Delete</button>
+                      <button
+                        onClick={() => handleDeletePost(service._id as string)}
+                      >
+                        Delete
+                      </button>
                     </div>
                   </li>
                 );
