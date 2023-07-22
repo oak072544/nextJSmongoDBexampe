@@ -1,7 +1,7 @@
 import Head from "next/head";
-import clientPromise from "../lib/mongodb";
+import clientPromise from "../../../lib/mongodb";
 import { InferGetServerSidePropsType } from "next";
-import Layout from "../components/Layout";
+import Layout from "../../../components/Layout";
 import { type } from "os";
 import React, { useState } from "react";
 /*
@@ -22,7 +22,7 @@ type Service = {
 
 export async function getServerSideProps() {
   try {
-    let response = await fetch("http://localhost:3000/api/getServices");
+    let response = await fetch("http://localhost:3000/api/getServicesFromRole?role=student");
     let services = await response.json();
 
     return {
@@ -68,9 +68,8 @@ export default function Home(props: Props) {
                   <li key={index} className="post-item">
                     <div className="post-item-details">
                       <h2>{service.name}</h2>
-                      <a href={`${service.link}`}>{service.link}</a>
-                      <br />
-                      <img src={`${service.image}`} alt={`${service.image}`}></img>
+                      <p>{service.link}</p>
+                      <p>{service.image}</p>
                       <p>{service.role}</p>
                     </div>
                     <div className="post-item-actions">

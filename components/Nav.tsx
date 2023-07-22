@@ -5,8 +5,8 @@ function Nav() {
     <nav className={styles.navbar}>
         <div className={styles.navItems}>
             <ul>
-                <li><a href="/">My Posts</a></li>
-                <li><a href="/posts">Add Post</a></li>
+                <li><a href="/">My Service</a></li>
+                <li><a href="/service">Add Service</a></li>
             </ul>
         </div>
     </nav>

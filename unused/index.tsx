@@ -8,25 +8,30 @@ import React, { useState } from "react";
 ประกาศไทป์เพื่อใช้ในโค้ด
 */
 type Props = {
-  collec: [Service];
+  posts: [Post];
 };
 
-type Service = {
-    _id: String;
-    name: String;
-    image: String; //หาประเภทมา
-    role : String; //น่าจะมาแก้เป็น Array เก็บ boolean ทีหลัง
-    link : String;
+type Post = {
+  _id: String;
+  title: String;
+  content: String;
 };
 
+type Services = {
+  _id: String;
+  name: String;
+  image: String;
+  role : String; //น่าจะมาแก้เป็น Array เก็บ boolean ทีหลัง
+  info : String;
+};
 
 export async function getServerSideProps() {
   try {
-    let response = await fetch("http://localhost:3000/api/getServices");
-    let services = await response.json();
+    let response = await fetch("http://localhost:3000/api/getPosts");
+    let posts = await response.json();
 
     return {
-      props: { collec: JSON.parse(JSON.stringify(services)) },
+      props: { posts: JSON.parse(JSON.stringify(posts)) },
     };
   } catch (e) {
     console.error(e);
@@ -34,11 +39,11 @@ export async function getServerSideProps() {
 }
 
 export default function Home(props: Props) {
-  const [collec, setCollec] = useState<[Service]>(props.collec);
+  const [posts, setPosts] = useState<[Post]>(props.posts);
 
-  const handleDeletePost = async(serviceId:string) => {
+  const handleDeletePost = async(postId:string) => {
     try {
-      let response =await fetch("http://localhost:3000/api/deleteService?id=" + serviceId,{
+      let response =await fetch("http://localhost:3000/api/deletePost?id=" + postId,{
         method:"POST",
         headers:{
           Accept:"application/json, text/plain, */*",
@@ -59,23 +64,21 @@ export default function Home(props: Props) {
       </Head>
 
       <Layout>
-        <div className="posts-body"> {/* Post body */}
-          <h1 className="posts-body-heading">Services</h1>
-          {collec?.length > 0 ? (
+        {/* Post body */}
+        <div className="posts-body">
+          <h1 className="posts-body-heading">Top 20 posts</h1>
+          {posts?.length > 0 ? (
             <ul className="posts-list">
-              {collec.map((service, index) => {
+              {posts.map((post, index) => {
                 return (
                   <li key={index} className="post-item">
                     <div className="post-item-details">
-                      <h2>{service.name}</h2>
-                      <a href={`${service.link}`}>{service.link}</a>
-                      <br />
-                      <img src={`${service.image}`} alt={`${service.image}`}></img>
-                      <p>{service.role}</p>
+                      <h2>{post.title}</h2>
+                      <p>{post.content}</p>
                     </div>
                     <div className="post-item-actions">
-                      <a href={`/service/${service._id}`}>Edit</a>
-                      <button onClick={() => handleDeletePost(service._id as string)}>Delete</button>
+                      <a href={`/posts/${post._id}`}>Edit</a>
+                      <button onClick={() => handleDeletePost(post._id as string)}>Delete</button>
                     </div>
                   </li>
                 );
