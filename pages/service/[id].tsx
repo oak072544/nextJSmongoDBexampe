@@ -15,6 +15,7 @@ type Post = {
   image: string;
   role: { [key: string]: boolean }; // Update the type to object with key-value pairs
   link: string;
+  enable : boolean;
 };
 
 type ResponseFromSever = {
@@ -23,6 +24,7 @@ type ResponseFromSever = {
   image: string;
   role: { [key: string]: boolean }; // Update the type to object with key-value pairs
   link: string;
+  enable : boolean;
 };
 
 export async function getStaticProps({
@@ -45,6 +47,7 @@ export async function getStaticProps({
           image: responseFromSever.image, //หาประเภทมา
           role: responseFromSever.role, //น่าจะมาแก้เป็น Array เก็บ boolean ทีหลัง
           link: responseFromSever.link,
+          enable : responseFromSever.enable,
         },
       },
     };
@@ -65,6 +68,7 @@ export async function getStaticProps({
             templecturer: false,
           },
           link: "",
+          enable : true,
         },
       },
     };
@@ -88,7 +92,7 @@ export async function getStaticPaths() {
   };
 }
 function EditPost({
-  post: { _id, name, image, role, link },
+  post: { _id, name, image, role, link,enable },
 }: ContentPageProps) {
   /*
   const [postTitle, setPostTitle] = useState(title);
@@ -98,6 +102,7 @@ function EditPost({
   const [serviceLink, setServiceLink] = useState(link);
   const [serviceImage, setServiceImage] = useState(image);
   const [serviceRole, setServiceRole] = useState(role);
+  const [serviceEnable, setServiceEnable] = useState(enable);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
@@ -199,6 +204,15 @@ function EditPost({
               </label>
             </div>
           ))}
+        </div>
+
+        <div className="form-group"> {/*Enable*/}
+          <label>Enable</label>
+                <input
+                  type="checkbox"
+                  checked={serviceEnable}
+                  onChange={(e) => setServiceEnable(e.target.checked)}
+                />
         </div>
 
         <div className="form-group">

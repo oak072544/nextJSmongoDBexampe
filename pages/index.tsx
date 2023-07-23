@@ -17,6 +17,7 @@ type Service = {
   image: string;
   role: { [key: string]: boolean }; // Update the type to object with key-value pairs
   link: string;
+  enable : boolean;
 };
 
 export async function getServerSideProps() {
@@ -82,6 +83,7 @@ export default function Home(props: Props) {
                           </li>
                         ))}
                       </ul>
+                      enable : {service.enable ? "true":"false"}
                     </div>
 
                     <div className="post-item-actions">

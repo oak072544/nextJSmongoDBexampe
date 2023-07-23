@@ -123,7 +123,7 @@ function index() {
           ))}
         </div>
 
-        <div className="form-group"> {/*Role*/}
+        <div className="form-group"> {/*Enable*/}
           <label>Enable</label>
                 <input
                   type="checkbox"
