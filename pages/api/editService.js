@@ -6,7 +6,8 @@ export default async (req, res) => {
     const client = await clientPromise;
     const db = client.db("project");
     const { id } = req.query;
-    const { name, image, role, link } = req.body;
+    const { name, image, link } = req.body;
+    const role = req.body.role;
 
     const post = await db.collection("service").updateOne(
       {

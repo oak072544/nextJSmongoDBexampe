@@ -10,19 +10,19 @@ type ContentPageProps = {
   post: Post;
 };
 type Post = {
-  _id: String;
-  name: String;
-  image: String; //หาประเภทมา
-  role: String; //น่าจะมาแก้เป็น Array เก็บ boolean ทีหลัง
-  link: String;
+  _id: string;
+  name: string;
+  image: string;
+  role: { [key: string]: boolean }; // Update the type to object with key-value pairs
+  link: string;
 };
 
 type ResponseFromSever = {
-  _id: String;
-  name: String;
-  image: String; //หาประเภทมา
-  role: String; //น่าจะมาแก้เป็น Array เก็บ boolean ทีหลัง
-  link: String;
+  _id: string;
+  name: string;
+  image: string;
+  role: { [key: string]: boolean }; // Update the type to object with key-value pairs
+  link: string;
 };
 
 export async function getStaticProps({
@@ -56,7 +56,14 @@ export async function getStaticProps({
           _id: "",
           name: "",
           image: "", //หาประเภทมา
-          role: "", //นาจะมาแก้เป็น Array เก็บ boolean ทีหลัง
+          role: {
+            student: false,
+            echange_student: false,
+            alumni: false,
+            personel: false,
+            retirement: false,
+            templecturer: false,
+          },
           link: "",
         },
       },
@@ -136,7 +143,8 @@ function EditPost({
         {error ? <div className="alert-error">{error}</div> : null}
         {message ? <div className="alert-message">{message}</div> : null}
 
-        <div className="form-group"> {/*Name*/}
+        <div className="form-group">
+          {/*Name*/}
           <label htmlFor="name">Name</label>
           <input
             name="name"
@@ -147,7 +155,8 @@ function EditPost({
           />
         </div>
 
-        <div className="form-group"> {/*Link*/}
+        <div className="form-group">
+          {/*Link*/}
           <label htmlFor="link">Link</label>
           <textarea
             name="link"
@@ -159,26 +168,37 @@ function EditPost({
           ></textarea>
         </div>
 
-        <div className="form-group"> {/*Image*/}
+        <div className="form-group">
+          {/*Image*/}
           <label htmlFor="image">Image</label>
           <input
             name="image"
             type="text"
             placeholder="Image of the service"
             onChange={(e) => setServiceImage(e.target.value)}
-            value={serviceImage ? serviceImage: ""}
+            value={serviceImage ? serviceImage : ""}
           />
         </div>
 
         <div className="form-group"> {/*Role*/}
           <label htmlFor="role">Role</label>
-          <input
-            name="role"
-            type="text"
-            placeholder="Role of the post"
-            onChange={(e) => setServiceRole(e.target.value)}
-            value={serviceRole ? serviceRole : ""}
-          />
+          {Object.keys(serviceRole).map((r, index) => (
+            <div key={index}>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={serviceRole[r]}
+                  onChange={(e) => {
+                    setServiceRole((prevRoles) => ({
+                      ...prevRoles,
+                      [r]: e.target.checked,
+                    }));
+                  }}
+                />
+                {r}
+              </label>
+            </div>
+          ))}
         </div>
 
         <div className="form-group">
