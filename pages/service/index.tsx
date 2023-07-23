@@ -13,6 +13,7 @@ function index() {
     retirement: false,
     templecturer: false,
   });
+  const [enable, setEnable] = useState(true);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
@@ -29,6 +30,7 @@ function index() {
             image: image,
             role: role,
             link: link,
+            enable: enable,
           }),
           headers: {
             Accept: "application/json , text/plain, */*",
@@ -49,6 +51,7 @@ function index() {
           retirement: false,
           templecturer: false,
         });
+        setEnable(true);
         setError("");
         setMessage("Service added successfully!");
       } catch (errorMessage: any) {
@@ -65,9 +68,7 @@ function index() {
         {error ? <div className="alert-error">{error}</div> : null}
         {message ? <div className="alert-message">{message}</div> : null}
 
-        <div className="form-group">
-          {" "}
-          {/*Name*/}
+        <div className="form-group"> {/*Name*/}
           <label htmlFor="name">Name</label>
           <input
             name="name"
@@ -78,9 +79,7 @@ function index() {
           />
         </div>
 
-        <div className="form-group">
-          {" "}
-          {/*Link*/}
+        <div className="form-group"> {/*Link*/}
           <label htmlFor="link">Link</label>
           <textarea
             name="link"
@@ -92,9 +91,7 @@ function index() {
           ></textarea>
         </div>
 
-        <div className="form-group">
-          {" "}
-          {/*Image*/}
+        <div className="form-group"> {/*Image*/}
           <label htmlFor="image">Image</label>
           <input
             name="image"
@@ -105,20 +102,7 @@ function index() {
           />
         </div>
 
-        {/*
-        <div className="form-group"> //Role
-          <label htmlFor="role">Role</label>
-          <input
-            name="role"
-            type="text"
-            placeholder="Role of the post"
-            onChange={(e) => setRole(e.target.value)}
-            value={role}
-          />
-        </div>
-        */}
-
-        <div className="form-group">
+        <div className="form-group"> {/*Role*/}
           <label>Role</label>
           {Object.keys(role).map((r, index) => (
             <div key={index}>
@@ -139,8 +123,17 @@ function index() {
           ))}
         </div>
 
+        <div className="form-group"> {/*Role*/}
+          <label>Enable</label>
+                <input
+                  type="checkbox"
+                  checked={enable}
+                  onChange={(e) => setEnable(e.target.checked)}
+                />
+        </div>
+
+
         <div className="form-group">
-          {" "}
           {/*Submit*/}
           <button type="submit" className="submit_btn">
             Add Service

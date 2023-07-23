@@ -9,6 +9,7 @@ export default async (req, res) => {
       name,
       image,
       link,
+      enable,
     } = req.body;
     const role = req.body.role; // Extract the checked values
 
@@ -17,6 +18,7 @@ export default async (req, res) => {
       image,
       role, //น่าจะมาแก้เป็น Array เก็บ boolean ทีหลัง
       link,
+      enable,
     });
 
     res.status(201).json(post);
