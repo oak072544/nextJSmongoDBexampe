@@ -12,6 +12,7 @@ type ContentPageProps = {
 type Post = {
   _id: string;
   name: string;
+  description : string;
   image: string;
   role: { [key: string]: boolean }; // Update the type to object with key-value pairs
   link: string;
@@ -21,6 +22,7 @@ type Post = {
 type ResponseFromSever = {
   _id: string;
   name: string;
+  description : string;
   image: string;
   role: { [key: string]: boolean }; // Update the type to object with key-value pairs
   link: string;
@@ -44,6 +46,7 @@ export async function getStaticProps({
         post: {
           _id: responseFromSever._id,
           name: responseFromSever.name,
+          description : responseFromSever.description,
           image: responseFromSever.image, //หาประเภทมา
           role: responseFromSever.role, //น่าจะมาแก้เป็น Array เก็บ boolean ทีหลัง
           link: responseFromSever.link,
@@ -58,6 +61,7 @@ export async function getStaticProps({
         post: {
           _id: "",
           name: "",
+          description:"",
           image: "", //หาประเภทมา
           role: {
             student: false,
@@ -92,13 +96,14 @@ export async function getStaticPaths() {
   };
 }
 function EditPost({
-  post: { _id, name, image, role, link,enable },
+  post: { _id, name,description, image, role, link,enable },
 }: ContentPageProps) {
   /*
   const [postTitle, setPostTitle] = useState(title);
   const [postContent, setPostContent] = useState(content);
   */
   const [serviceName, setServiceName] = useState(name);
+  const [serviceDescription, setServiceDescription] = useState(description);
   const [serviceLink, setServiceLink] = useState(link);
   const [serviceImage, setServiceImage] = useState(image);
   const [serviceRole, setServiceRole] = useState(role);
@@ -160,13 +165,25 @@ function EditPost({
           />
         </div>
 
+        <div className="form-group"> {/*Description*/}
+          <label htmlFor="description">Description</label>
+          <textarea
+            name="Description"
+            cols={20}
+            rows={5}
+            placeholder="Description of the service"
+            onChange={(e) => setServiceDescription(e.target.value)}
+            value={serviceDescription ? serviceDescription : "" }
+          ></textarea>
+        </div>
+
         <div className="form-group">
           {/*Link*/}
           <label htmlFor="link">Link</label>
           <textarea
             name="link"
             cols={20}
-            rows={8}
+            rows={1}
             placeholder="Link of the service"
             onChange={(e) => setServiceLink(e.target.value)}
             value={serviceLink ? serviceLink : ""}

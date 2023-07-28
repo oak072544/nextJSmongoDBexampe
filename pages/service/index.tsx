@@ -3,6 +3,7 @@ import Layout from "../../components/Layout";
 
 function index() {
   const [name, setName] = useState("");
+  const [description,setDescription] = useState("");
   const [link, setLink] = useState("");
   const [image, setImage] = useState("");
   const [role, setRole] = useState({
@@ -27,6 +28,7 @@ function index() {
           method: "POST",
           body: JSON.stringify({
             name: name,
+            description : description,
             image: image,
             role: role,
             link: link,
@@ -41,6 +43,7 @@ function index() {
         response = await response.json();
 
         setName("");
+        setDescription("");
         setLink("");
         setImage("");
         setRole({
@@ -79,17 +82,31 @@ function index() {
           />
         </div>
 
+        <div className="form-group"> {/*Description*/}
+          <label htmlFor="description">Description</label>
+          <textarea
+            name="Description"
+            cols={20}
+            rows={5}
+            placeholder="Description of the service"
+            onChange={(e) => setDescription(e.target.value)}
+            value={description}
+          ></textarea>
+        </div>
+        
         <div className="form-group"> {/*Link*/}
           <label htmlFor="link">Link</label>
           <textarea
             name="link"
             cols={20}
-            rows={8}
+            rows={1}
             placeholder="Link of the service"
             onChange={(e) => setLink(e.target.value)}
             value={link}
           ></textarea>
         </div>
+
+        
 
         <div className="form-group"> {/*Image*/}
           <label htmlFor="image">Image</label>
@@ -124,7 +141,7 @@ function index() {
         </div>
 
         <div className="form-group"> {/*Enable*/}
-          <label>Enable</label>
+          <label htmlFor="enable">Enable</label>
                 <input
                   type="checkbox"
                   checked={enable}

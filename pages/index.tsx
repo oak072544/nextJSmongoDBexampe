@@ -14,6 +14,7 @@ type Props = {
 type Service = {
   _id: string;
   name: string;
+  description : string;
   image: string;
   role: { [key: string]: boolean }; // Update the type to object with key-value pairs
   link: string;
@@ -74,7 +75,8 @@ export default function Home(props: Props) {
 
                     <div className="post-item-details">
                       <h2>{service.name}</h2>
-                      <a href={`${service.link}`}>{service.link}</a>
+                      {service.description}<br />
+                      <a href={`${service.link}`}>{service.link}</a><br />
                       <img src={`${service.image}`} alt={`${service.image}`} />
                       <ul>
                         {Object.keys(service.role).map((role, index) => (

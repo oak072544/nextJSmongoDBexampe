@@ -7,6 +7,7 @@ export default async (req, res) => {
 
     const {
       name,
+      description,
       image,
       link,
       enable,
@@ -15,6 +16,7 @@ export default async (req, res) => {
 
     const post = await db.collection("service").insertOne({
       name,
+      description,
       image,
       role, //น่าจะมาแก้เป็น Array เก็บ boolean ทีหลัง
       link,
