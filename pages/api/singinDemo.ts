@@ -18,9 +18,11 @@ export default async function handler (_req: NextApiRequest,
           }),
         });
 
-        info = await info.json();
 
-        res.status(200).json(info);
+        const infoData = await info.json();
+        let statuscode = infoData.api_status_code;
+
+        res.status(statuscode).json(infoData);
 
     }
     catch (e : any)

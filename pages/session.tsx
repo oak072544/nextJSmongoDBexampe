@@ -1,26 +1,17 @@
-import { NextPage } from "next";
-import { useSession } from "next-auth/react";
-import Router from "next/router";
-import { useEffect } from "react";
+import { useSession, signIn, signOut } from "next-auth/react"
 
-const Protected: NextPage = (): JSX.Element => {
-  const { status, data } = useSession();
-
-  useEffect(() => {
-    if (status === "unauthenticated") Router.replace("api/auth/signin");
-  }, [status]);
-
-  if (status === "authenticated") {
-    console.log(data.user);
-    return (
-      <div>
-        This page is Protected for special people. like{"\n"}
-        {JSON.stringify(data.user)}
-      </div>
-    );
-  } else {
-    return <div>loading</div>;
+export default function Component() {
+  const { data: session } = useSession()
+  if(session) {
+    console.log(JSON.stringify(session));
+    console.log(JSON.stringify(session.user));
+    return <>
+      Signed in as {session.user?.name} <br/>
+      <button onClick={() => signOut()}>Sign out</button>
+    </>
   }
-};
-
-export default Protected;
+  return <>
+    Not signed in <br/>
+    <button onClick={() => signIn()}>Sign in</button>
+  </>
+}

@@ -1,7 +1,17 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import Layout from "../../components/Layout";
-
+import { useSession } from "next-auth/react"
 function index() {
+  let d = new Date();
+
+  const { data: session, status } = useSession()
+  const [username, setUsername] = useState("");
+  useEffect(() => {
+    if (status === "authenticated" && session?.user?.name) {
+      setUsername(session.user.name);
+    }
+  }, [status, session]);
+
   const [name, setName] = useState("");
   const [description,setDescription] = useState("");
   const [link, setLink] = useState("");
@@ -14,6 +24,7 @@ function index() {
     retirement: false,
     templecturer: false,
   });
+  const [date, setDate] = useState(d.toString());
   const [enable, setEnable] = useState(true);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
@@ -32,6 +43,8 @@ function index() {
             image: image,
             role: role,
             link: link,
+            date: date,
+            username : username,
             enable: enable,
           }),
           headers: {
@@ -54,6 +67,8 @@ function index() {
           retirement: false,
           templecturer: false,
         });
+        d = new Date();
+        setDate(d.toString());
         setEnable(true);
         setError("");
         setMessage("Service added successfully!");
@@ -76,7 +91,7 @@ function index() {
           <input
             name="name"
             type="text"
-            placeholder="Name of the post"
+            placeholder="Name of the Service"
             onChange={(e) => setName(e.target.value)}
             value={name}
           />
@@ -93,7 +108,7 @@ function index() {
             value={description}
           ></textarea>
         </div>
-        
+
         <div className="form-group"> {/*Link*/}
           <label htmlFor="link">Link</label>
           <textarea
@@ -106,7 +121,7 @@ function index() {
           ></textarea>
         </div>
 
-        
+
 
         <div className="form-group"> {/*Image*/}
           <label htmlFor="image">Image</label>
@@ -138,6 +153,28 @@ function index() {
               </label>
             </div>
           ))}
+        </div>
+
+        <div className="form-group">
+          {/*Date*/}
+          <label htmlFor="Date">Date</label>
+          <textarea
+            name="Date"
+            placeholder="Date will show here"
+            value={date}
+            readOnly
+          />
+        </div>
+
+        <div className="form-group">
+          {/*Username*/}
+          <label htmlFor="Date">Username</label>
+          <textarea
+            name="Username"
+            placeholder="Username will show here"
+            value={username}
+            readOnly
+          />
         </div>
 
         <div className="form-group"> {/*Enable*/}

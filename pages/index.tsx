@@ -1,5 +1,5 @@
 import Head from "next/head";
-import clientPromise from "../lib/mongodb";
+import clientPromise from "../lib/mongodb"; //
 import { InferGetServerSidePropsType } from "next";
 import Layout from "../components/Layout";
 import { type } from "os";
