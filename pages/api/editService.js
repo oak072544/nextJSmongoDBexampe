@@ -11,7 +11,7 @@ export default async (req, res) => {
 
     const post = await db.collection("service").updateOne(
       {
-        _id: ObjectId(id),
+        _id: new ObjectId(id),
       },
       {
         $set: {

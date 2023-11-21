@@ -4,7 +4,7 @@ import Layout from "../../components/Layout";
 import { type } from "os";
 
 type PageParams = {
-  id: String;
+  id: string;
 };
 type ContentPageProps = {
   post: Post;
@@ -16,6 +16,8 @@ type Post = {
   image: string;
   role: { [key: string]: boolean }; // Update the type to object with key-value pairs
   link: string;
+  date : Date;
+  username : string;
   enable : boolean;
 };
 
@@ -26,6 +28,8 @@ type ResponseFromSever = {
   image: string;
   role: { [key: string]: boolean }; // Update the type to object with key-value pairs
   link: string;
+  date : Date;
+  username : string;
   enable : boolean;
 };
 
@@ -50,6 +54,8 @@ export async function getStaticProps({
           image: responseFromSever.image, //หาประเภทมา
           role: responseFromSever.role, //น่าจะมาแก้เป็น Array เก็บ boolean ทีหลัง
           link: responseFromSever.link,
+          date : responseFromSever.date,
+          username : responseFromSever.username,
           enable : responseFromSever.enable,
         },
       },
@@ -72,6 +78,8 @@ export async function getStaticProps({
             templecturer: false,
           },
           link: "",
+          date : new Date(),
+          username : "",
           enable : true,
         },
       },
@@ -96,7 +104,7 @@ export async function getStaticPaths() {
   };
 }
 function EditPost({
-  post: { _id, name,description, image, role, link,enable },
+  post: { _id, name,description, image, role, link, date, username, enable },
 }: ContentPageProps) {
   /*
   const [postTitle, setPostTitle] = useState(title);
@@ -108,6 +116,8 @@ function EditPost({
   const [serviceImage, setServiceImage] = useState(image);
   const [serviceRole, setServiceRole] = useState(role);
   const [serviceEnable, setServiceEnable] = useState(enable);
+  const [serviceDate, setServiceDate] = useState(date);
+  const [serviceUsername, setServiceUsername] = useState(username);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
@@ -122,9 +132,12 @@ function EditPost({
             method: "POST",
             body: JSON.stringify({
               name: serviceName,
+              description : serviceDescription,
               image: serviceImage,
               role: serviceRole,
               link: serviceLink,
+              date : serviceDate,
+              enable: serviceEnable,
             }),
             headers: {
               Accept: "application/json, text/plain, */*",
@@ -221,6 +234,28 @@ function EditPost({
               </label>
             </div>
           ))}
+        </div>
+
+        {/*Date*/}
+        <div className="form-group">
+          <label htmlFor="Date">Date</label>
+          <textarea
+            name="Date"
+            placeholder="Date will show here"
+            value={serviceDate.valueOf()}
+            readOnly
+          />
+        </div>
+
+        <div className="form-group">
+          {/*Username*/}
+          <label htmlFor="Date">Username</label>
+          <textarea
+            name="Username"
+            placeholder="Username will show here"
+            value={serviceUsername}
+            readOnly
+          />
         </div>
 
         <div className="form-group"> {/*Enable*/}

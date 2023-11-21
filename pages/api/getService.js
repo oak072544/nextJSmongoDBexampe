@@ -8,7 +8,7 @@ export default async (req,res)=>{
         const {id} = req.query;
 
         const post = await db.collection("service").findOne({
-            _id: ObjectId(id)
+            _id: new ObjectId(id)
         })
         res.status(200).json(post);
     }
