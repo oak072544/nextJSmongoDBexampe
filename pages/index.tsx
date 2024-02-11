@@ -55,6 +55,7 @@ export default function Home(props: Props) {
       console.log("An error occured while deleting", error);
     }
   };
+
   return (
     <div className="container">
       <Head>
