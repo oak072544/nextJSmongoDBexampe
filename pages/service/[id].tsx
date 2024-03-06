@@ -71,7 +71,7 @@ export async function getStaticProps({
           image: "", //หาประเภทมา
           role: {
             student: false,
-            echange_student: false,
+            exchange_student: false,
             alumni: false,
             personel: false,
             retirement: false,

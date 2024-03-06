@@ -18,7 +18,7 @@ function index() {
   const [image, setImage] = useState("");
   const [role, setRole] = useState({
     student: false,
-    echange_student: false,
+    exchange_student: false,
     alumni: false,
     personel: false,
     retirement: false,
@@ -61,7 +61,7 @@ function index() {
         setImage("");
         setRole({
           student: false,
-          echange_student: false,
+          exchange_student: false,
           alumni: false,
           personel: false,
           retirement: false,
