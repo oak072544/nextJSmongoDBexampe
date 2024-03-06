@@ -1,37 +1,33 @@
 import Head from "next/head";
-import clientPromise from "../lib/mongodb";
+import clientPromise from "../../lib/mongodb"; //
 import { InferGetServerSidePropsType } from "next";
-import Layout from "../components/Layout";
+import Layout from "../../components/Layout";
 import { type } from "os";
 import React, { useState } from "react";
 /*
 ประกาศไทป์เพื่อใช้ในโค้ด
 */
 type Props = {
-  posts: [Post];
+  collec: [Service];
 };
 
-type Post = {
-  _id: String;
-  title: String;
-  content: String;
-};
-
-type Services = {
-  _id: String;
-  name: String;
-  image: String;
-  role : String; //น่าจะมาแก้เป็น Array เก็บ boolean ทีหลัง
-  info : String;
+type Service = {
+  _id: string;
+  name: string;
+  description: string;
+  image: string;
+  role: { [key: string]: boolean }; // Update the type to object with key-value pairs
+  link: string;
+  enable: boolean;
 };
 
 export async function getServerSideProps() {
   try {
-    let response = await fetch("http://localhost:3000/api/getPosts");
-    let posts = await response.json();
+    let response = await fetch("http://localhost:3000/api/getServices");
+    let services = await response.json();
 
     return {
-      props: { posts: JSON.parse(JSON.stringify(posts)) },
+      props: { collec: JSON.parse(JSON.stringify(services)) },
     };
   } catch (e) {
     console.error(e);
@@ -39,23 +35,27 @@ export async function getServerSideProps() {
 }
 
 export default function Home(props: Props) {
-  const [posts, setPosts] = useState<[Post]>(props.posts);
+  const [collec, setCollec] = useState<[Service]>(props.collec);
 
-  const handleDeletePost = async(postId:string) => {
+  const handleDeletePost = async (serviceId: string) => {
     try {
-      let response =await fetch("http://localhost:3000/api/deletePost?id=" + postId,{
-        method:"POST",
-        headers:{
-          Accept:"application/json, text/plain, */*",
-          "Content-Type":"application/json"
+      let response = await fetch(
+        "http://localhost:3000/api/deleteService?id=" + serviceId,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json, text/plain, */*",
+            "Content-Type": "application/json",
+          },
         }
-      })
+      );
       response = await response.json();
       window.location.reload();
     } catch (error) {
       console.log("An error occured while deleting", error);
     }
-  }
+  };
+
   return (
     <div className="container">
       <Head>
@@ -64,21 +64,38 @@ export default function Home(props: Props) {
       </Head>
 
       <Layout>
-        {/* Post body */}
         <div className="posts-body">
-          <h1 className="posts-body-heading">Top 20 posts</h1>
-          {posts?.length > 0 ? (
+          {" "}
+          {/* Post body */}
+          <h1 className="posts-body-heading">Services</h1>
+          {collec?.length > 0 ? (
             <ul className="posts-list">
-              {posts.map((post, index) => {
+              {collec.map((service, index) => {
                 return (
                   <li key={index} className="post-item">
+
                     <div className="post-item-details">
-                      <h2>{post.title}</h2>
-                      <p>{post.content}</p>
+                      <h2>{service.name}</h2>
+                      {service.description}<br />
+                      <a href={`${service.link}`}>{service.link}</a><br />
+                      <img src={`${service.image}`} alt={`${service.image}`} />
+                      <ul>
+                        {Object.keys(service.role).map((role, index) => (
+                          <li key={index}>
+                            {role}: {service.role[role] ? "true" : "false"}
+                          </li>
+                        ))}
+                      </ul>
+                      enable : {service.enable ? "true" : "false"}
                     </div>
+
                     <div className="post-item-actions">
-                      <a href={`/posts/${post._id}`}>Edit</a>
-                      <button onClick={() => handleDeletePost(post._id as string)}>Delete</button>
+                      <a href={`/service/${service._id}`}>Edit</a>
+                      <button
+                        onClick={() => handleDeletePost(service._id as string)}
+                      >
+                        Delete
+                      </button>
                     </div>
                   </li>
                 );
