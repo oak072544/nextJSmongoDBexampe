@@ -93,4 +93,10 @@ function DraggableItem({ handle }: DraggableProps) {
     );
 }
 
-export default DroppableStory;
+function MultipleDroppables() {
+    return (
+        <DroppableStory containers={['A', 'B', 'C', 'E']} />
+    )
+};
+
+export default MultipleDroppables;
