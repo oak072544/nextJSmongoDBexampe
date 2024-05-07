@@ -12,25 +12,25 @@ type ContentPageProps = {
 type Post = {
   _id: string;
   name: string;
-  description : string;
+  description: string;
   image: string;
   role: { [key: string]: boolean }; // Update the type to object with key-value pairs
   link: string;
-  date : Date;
-  username : string;
-  enable : boolean;
+  date: Date;
+  username: string;
+  enable: boolean;
 };
 
 type ResponseFromSever = {
   _id: string;
   name: string;
-  description : string;
+  description: string;
   image: string;
   role: { [key: string]: boolean }; // Update the type to object with key-value pairs
   link: string;
-  date : Date;
-  username : string;
-  enable : boolean;
+  date: Date;
+  username: string;
+  enable: boolean;
 };
 
 export async function getStaticProps({
@@ -40,7 +40,7 @@ export async function getStaticProps({
 > {
   try {
     let response = await fetch(
-      "http://localhost:3000/api/getService?id=" + params?.id
+      "http://localhost:3000/api/management/getService?id=" + params?.id
     );
 
     let responseFromSever: ResponseFromSever = await response.json();
@@ -50,13 +50,13 @@ export async function getStaticProps({
         post: {
           _id: responseFromSever._id,
           name: responseFromSever.name,
-          description : responseFromSever.description,
+          description: responseFromSever.description,
           image: responseFromSever.image, //หาประเภทมา
           role: responseFromSever.role, //น่าจะมาแก้เป็น Array เก็บ boolean ทีหลัง
           link: responseFromSever.link,
-          date : responseFromSever.date,
-          username : responseFromSever.username,
-          enable : responseFromSever.enable,
+          date: responseFromSever.date,
+          username: responseFromSever.username,
+          enable: responseFromSever.enable,
         },
       },
     };
@@ -67,7 +67,7 @@ export async function getStaticProps({
         post: {
           _id: "",
           name: "",
-          description:"",
+          description: "",
           image: "", //หาประเภทมา
           role: {
             student: false,
@@ -78,9 +78,9 @@ export async function getStaticProps({
             templecturer: false,
           },
           link: "",
-          date : new Date(),
-          username : "",
-          enable : true,
+          date: new Date(),
+          username: "",
+          enable: true,
         },
       },
     };
@@ -88,7 +88,7 @@ export async function getStaticProps({
 }
 
 export async function getStaticPaths() {
-  let posts = await fetch("http://localhost:3000/api/getServices");
+  let posts = await fetch("http://localhost:3000/api/management/getServices");
 
   let postFromServer: [Post] = await posts.json();
 
@@ -104,7 +104,7 @@ export async function getStaticPaths() {
   };
 }
 function EditPost({
-  post: { _id, name,description, image, role, link, date, username, enable },
+  post: { _id, name, description, image, role, link, date, username, enable },
 }: ContentPageProps) {
   /*
   const [postTitle, setPostTitle] = useState(title);
@@ -127,16 +127,16 @@ function EditPost({
     if (serviceName && serviceImage) {
       try {
         let response = await fetch(
-          "http://localhost:3000/api/editService?id=" + _id,
+          "http://localhost:3000/api/management/editService?id=" + _id,
           {
             method: "POST",
             body: JSON.stringify({
               name: serviceName,
-              description : serviceDescription,
+              description: serviceDescription,
               image: serviceImage,
               role: serviceRole,
               link: serviceLink,
-              date : serviceDate,
+              date: serviceDate,
               enable: serviceEnable,
             }),
             headers: {
@@ -186,7 +186,7 @@ function EditPost({
             rows={5}
             placeholder="Description of the service"
             onChange={(e) => setServiceDescription(e.target.value)}
-            value={serviceDescription ? serviceDescription : "" }
+            value={serviceDescription ? serviceDescription : ""}
           ></textarea>
         </div>
 
@@ -260,11 +260,11 @@ function EditPost({
 
         <div className="form-group"> {/*Enable*/}
           <label>Enable</label>
-                <input
-                  type="checkbox"
-                  checked={serviceEnable}
-                  onChange={(e) => setServiceEnable(e.target.checked)}
-                />
+          <input
+            type="checkbox"
+            checked={serviceEnable}
+            onChange={(e) => setServiceEnable(e.target.checked)}
+          />
         </div>
 
         <div className="form-group">

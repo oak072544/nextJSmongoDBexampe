@@ -3,7 +3,7 @@ import Layout from "../components/Layout";
 
 const getServices = async () => {
   try {
-    let response = await fetch("http://localhost:3000/api/getServices");
+    let response = await fetch("http://localhost:3000/api/management/getServices", { cache: "no-store" });;
     return response.json();
   } catch (e) {
     console.error(e);
@@ -15,9 +15,9 @@ export default async function Home() {
   const handleServiceDelete = async (serviceId: string) => {
     try {
       let response = await fetch(
-        "http://localhost:3000/api/deleteService?id=" + serviceId,
+        "http://localhost:3000/api/management/deleteService?id=" + serviceId,
         {
-          method: "POST",
+          method: "DELETE",
           headers: {
             Accept: "application/json, text/plain, */*",
             "Content-Type": "application/json",
