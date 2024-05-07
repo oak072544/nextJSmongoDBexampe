@@ -8,9 +8,9 @@ export default async (req, res) => {
     const { id } = req.query;
 
     const post = await db.collection("service").deleteOne(
-     {
-        _id: ObjectId(id)
-     }
+      {
+        _id: new ObjectId(id)
+      }
     );
     res.json(post);
   } catch (error) {

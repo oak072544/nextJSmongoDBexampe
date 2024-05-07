@@ -10,7 +10,7 @@ export default NextAuth({
       name: "Credentials",
 
       credentials: {
-        username: { label: "Username", type: "text", placeholder: "jsmith" },
+        username: { label: "Username", type: "text", placeholder: "ICIT account" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
@@ -35,7 +35,7 @@ export default NextAuth({
 
         if ((user.api_message = "Authentication success")) {
           console.log(user.userInfo.username);
-          let permisssion = await fetch(
+          let permisssion : any = await fetch(
             "http://localhost:3000/api/getUser?username=" +
               user.userInfo.username
           );

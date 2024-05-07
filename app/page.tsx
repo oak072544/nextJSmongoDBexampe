@@ -1,48 +1,23 @@
-import Head from "next/head";
-import clientPromise from "../lib/mongodb"; //
-import { InferGetServerSidePropsType } from "next";
+"use client"
 import Layout from "../components/Layout";
-import { type } from "os";
-import React, { useState } from "react";
-/*
-ประกาศไทป์เพื่อใช้ในโค้ด
-*/
-type Props = {
-  collec: [Service];
-};
 
-type Service = {
-  _id: string;
-  name: string;
-  description : string;
-  image: string;
-  role: { [key: string]: boolean }; // Update the type to object with key-value pairs
-  link: string;
-  enable : boolean;
-};
-
-export async function getServerSideProps() {
+const getServices = async () => {
   try {
-    let response = await fetch("http://localhost:3000/api/getServices");
-    let services = await response.json();
-
-    return {
-      props: { collec: JSON.parse(JSON.stringify(services)) },
-    };
+    let response = await fetch("http://localhost:3000/api/management/getServices", { cache: "no-store" });;
+    return response.json();
   } catch (e) {
     console.error(e);
   }
 }
+export default async function Home() {
+  const services = await getServices();
 
-export default function Home(props: Props) {
-  const [collec, setCollec] = useState<[Service]>(props.collec);
-
-  const handleDeletePost = async (serviceId: string) => {
+  const handleServiceDelete = async (serviceId: string) => {
     try {
       let response = await fetch(
-        "http://localhost:3000/api/deleteService?id=" + serviceId,
+        "http://localhost:3000/api/management/deleteService?id=" + serviceId,
         {
-          method: "POST",
+          method: "DELETE",
           headers: {
             Accept: "application/json, text/plain, */*",
             "Content-Type": "application/json",
@@ -58,53 +33,40 @@ export default function Home(props: Props) {
 
   return (
     <div className="container">
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
 
       <Layout>
-        <div className="posts-body">
-          {" "}
-          {/* Post body */}
-          <h1 className="posts-body-heading">Services</h1>
-          {collec?.length > 0 ? (
-            <ul className="posts-list">
-              {collec.map((service, index) => {
-                return (
-                  <li key={index} className="post-item">
+        <h1>Services</h1>
+        {services?.length > 0 ?
+          (<ul className="posts-list">
+            {services.map((service: any, index: number) => (
+              <li key={index} className="post-item">
 
-                    <div className="post-item-details">
-                      <h2>{service.name}</h2>
-                      {service.description}<br />
-                      <a href={`${service.link}`}>{service.link}</a><br />
-                      <img src={`${service.image}`} alt={`${service.image}`} />
-                      <ul>
-                        {Object.keys(service.role).map((role, index) => (
-                          <li key={index}>
-                            {role}: {service.role[role] ? "true" : "false"}
-                          </li>
-                        ))}
-                      </ul>
-                      enable : {service.enable ? "true":"false"}
-                    </div>
+                <div className="post-item-details">
+                  <h2>{service.name}</h2>
+                  {service.description}<br />
+                  <a href={`${service.link}`}>{service.link}</a><br />
+                  <img src={`${service.image}`} alt={`${service.image}`} />
+                  <ul>
+                    {Object.keys(service.role).map((role, index) => (
+                      <li key={index}>
+                        {role}: {service.role[role] ? "true" : "false"}
+                      </li>
+                    ))}
+                  </ul>
+                  enable : {service.enable ? "true" : "false"}
+                </div>
 
-                    <div className="post-item-actions">
-                      <a href={`/service/${service._id}`}>Edit</a>
-                      <button
-                        onClick={() => handleDeletePost(service._id as string)}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          ) : (
-            <h2 className="posts-body-heading">Ooops ! No posts...</h2>
-          )}
-        </div>
+                <div className="post-item-actions">
+                  <a href={`/service/${service._id}`}>Edit</a>
+                  <button
+                    onClick={() => handleServiceDelete(service._id as string)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </li>
+            ))}</ul>)
+          : (<h2 className="posts-body-heading">Ooops ! No posts...</h2>)}
       </Layout>
 
       <footer>
@@ -278,6 +240,7 @@ export default function Home(props: Props) {
           box-sizing: border-box;
         }
       `}</style>
+
     </div>
   );
 }

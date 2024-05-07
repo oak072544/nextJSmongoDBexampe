@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "../../components/Layout";
 import { useSession } from "next-auth/react"
 function index() {
@@ -13,12 +13,12 @@ function index() {
   }, [status, session]);
 
   const [name, setName] = useState("");
-  const [description,setDescription] = useState("");
+  const [description, setDescription] = useState("");
   const [link, setLink] = useState("");
   const [image, setImage] = useState("");
-  const [role, setRole] = useState({
+  const [role, setRole] = useState<RoleType>({
     student: false,
-    echange_student: false,
+    exchange_student: false,
     alumni: false,
     personel: false,
     retirement: false,
@@ -29,22 +29,26 @@ function index() {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
+  interface RoleType {
+    [key: string]: boolean;
+  }
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     if (name && link) {
       //เงื่อนไขอาจจะเหลือแค่เช็คชื่อ
       try {
-        let response = await fetch("http://localhost:3000/api/addService", {
+        let response = await fetch("http://localhost:3000/api/management/addService", {
           method: "POST",
           body: JSON.stringify({
             name: name,
-            description : description,
+            description: description,
             image: image,
             role: role,
             link: link,
             date: date,
-            username : username,
+            username: username,
             enable: enable,
           }),
           headers: {
@@ -61,7 +65,7 @@ function index() {
         setImage("");
         setRole({
           student: false,
-          echange_student: false,
+          exchange_student: false,
           alumni: false,
           personel: false,
           retirement: false,
@@ -179,11 +183,11 @@ function index() {
 
         <div className="form-group"> {/*Enable*/}
           <label htmlFor="enable">Enable</label>
-                <input
-                  type="checkbox"
-                  checked={enable}
-                  onChange={(e) => setEnable(e.target.checked)}
-                />
+          <input
+            type="checkbox"
+            checked={enable}
+            onChange={(e) => setEnable(e.target.checked)}
+          />
         </div>
 
 
