@@ -1,4 +1,3 @@
-"use client"
 import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -92,6 +91,33 @@ const screenReaderInstructions: ScreenReaderInstructions = {
   `,
 };
 
+/**
+ * Renders a sortable list of items using the DndContext.
+ *
+ * @param activationConstraint - The activation constraint for the sensors.
+ * @param animateLayoutChanges - Determines whether layout changes should be animated.
+ * @param adjustScale - Determines whether to adjust the scale of the sortable items.
+ * @param Container - The container component to render the sortable items.
+ * @param collisionDetection - The collision detection strategy to use.
+ * @param coordinateGetter - The function to get the coordinates for keyboard sorting.
+ * @param dropAnimation - The configuration for the drop animation.
+ * @param getItemStyles - The function to get the styles for each sortable item.
+ * @param getNewIndex - The function to get the new index for a sortable item.
+ * @param handle - Determines whether to show a handle for dragging.
+ * @param itemCount - The number of items in the sortable list.
+ * @param initialItems - The initial items in the sortable list.
+ * @param isDisabled - The function to determine if a sortable item is disabled.
+ * @param measuring - Determines whether to enable measuring for the sortable items.
+ * @param modifiers - The modifiers to apply to the sortable items.
+ * @param removable - Determines whether sortable items can be removed.
+ * @param renderItem - The function to render each sortable item.
+ * @param reorderItems - The function to reorder the items in the sortable list.
+ * @param strategy - The sorting strategy to use.
+ * @param style - The style to apply to the sortable component.
+ * @param useDragOverlay - Determines whether to use a drag overlay for dragging.
+ * @param wrapperStyle - The function to get the styles for the sortable item wrapper.
+ */
+
 export function Sortable({
   activationConstraint,
   animateLayoutChanges,
@@ -116,6 +142,29 @@ export function Sortable({
   useDragOverlay = true,
   wrapperStyle = () => ({}),
 }: Props) {
+
+  const fetchData = async () => {
+    try {
+      let response = await fetch('api/dnd', {
+        method: "GET",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        let returnData: UniqueIdentifier[] = data.data;
+        return returnData;
+      } else {
+        console.error('Request failed with status:', response.status);
+        return undefined;
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      return undefined;
+    }
+  }
+
   const [items, setItems] = useState<UniqueIdentifier[]>(
     () =>
       initialItems ??
@@ -181,6 +230,27 @@ export function Sortable({
     },
   };
 
+  const saveData = async () => {
+    try {
+      // Call your save API here
+      // Example:
+      const response = await fetch('/api/dnd', {
+        method: 'POST',
+        body: JSON.stringify(items), // Convert items array to JSON string
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.ok) {
+        console.log('Data saved successfully');
+      } else {
+        console.error('Failed to save data');
+      }
+    } catch (error) {
+      console.error('Error saving data:', error);
+    }
+  };
+
   useEffect(() => {
     if (!activeId) {
       isFirstAnnouncement.current = true;
@@ -193,90 +263,93 @@ export function Sortable({
     setIsClient(true);
   }, []);
   return isClient ? (
-
-    <DndContext
-      accessibility={{
-        announcements,
-        screenReaderInstructions,
-      }}
-      sensors={sensors}
-      collisionDetection={collisionDetection}
-      onDragStart={({ active }) => {
-        if (!active) {
-          return;
-        }
-
-        setActiveId(active.id);
-      }}
-      onDragEnd={({ over }) => {
-        setActiveId(null);
-
-        if (over) {
-          const overIndex = getIndex(over.id);
-          if (activeIndex !== overIndex) {
-            setItems((items) => reorderItems(items, activeIndex, overIndex));
+    <>
+      <DndContext
+        accessibility={{
+          announcements,
+          screenReaderInstructions,
+        }}
+        sensors={sensors}
+        collisionDetection={collisionDetection}
+        onDragStart={({ active }) => {
+          if (!active) {
+            return;
           }
-        }
-      }}
-      onDragCancel={() => setActiveId(null)}
-      measuring={measuring}
-      modifiers={modifiers}
-    >
-      <Wrapper style={style} center>
-        <SortableContext items={items} strategy={strategy}>
-          <Container>
-            {items.map((value, index) => (
-              <SortableItem
-                key={value}
-                id={value}
-                handle={handle}
-                index={index}
-                style={getItemStyles}
-                wrapperStyle={wrapperStyle}
-                disabled={isDisabled(value)}
-                renderItem={renderItem}
-                onRemove={handleRemove}
-                animateLayoutChanges={animateLayoutChanges}
-                useDragOverlay={useDragOverlay}
-                getNewIndex={getNewIndex}
-              />
-            ))}
-          </Container>
-        </SortableContext>
-      </Wrapper>
-      {useDragOverlay
-        ? createPortal(
-          <DragOverlay
-            adjustScale={adjustScale}
-            dropAnimation={dropAnimation}
-          >
-            {activeId ? (
-              <Item
-                value={items[activeIndex]}
-                handle={handle}
-                renderItem={renderItem}
-                wrapperStyle={wrapperStyle({
-                  active: { id: activeId },
-                  index: activeIndex,
-                  isDragging: true,
-                  id: items[activeIndex],
-                })}
-                style={getItemStyles({
-                  id: items[activeIndex],
-                  index: activeIndex,
-                  isSorting: activeId !== null,
-                  isDragging: true,
-                  overIndex: -1,
-                  isDragOverlay: true,
-                })}
-                dragOverlay
-              />
-            ) : null}
-          </DragOverlay>,
-          document.body
-        )
-        : null}
-    </DndContext>
+
+          setActiveId(active.id);
+        }}
+        onDragEnd={({ over }) => {
+          setActiveId(null);
+
+          if (over) {
+            debugger
+            const overIndex = getIndex(over.id);
+            if (activeIndex !== overIndex) {
+              setItems((items) => reorderItems(items, activeIndex, overIndex));
+            }
+          }
+        }}
+        onDragCancel={() => setActiveId(null)}
+        measuring={measuring}
+        modifiers={modifiers}
+      >
+        <Wrapper style={style} center>
+          <SortableContext items={items} strategy={strategy}>
+            <Container>
+              {items.map((value, index) => (
+                <SortableItem
+                  key={value}
+                  id={value}
+                  handle={handle}
+                  index={index}
+                  style={getItemStyles}
+                  wrapperStyle={wrapperStyle}
+                  disabled={isDisabled(value)}
+                  renderItem={renderItem}
+                  onRemove={handleRemove}
+                  animateLayoutChanges={animateLayoutChanges}
+                  useDragOverlay={useDragOverlay}
+                  getNewIndex={getNewIndex}
+                />
+              ))}
+            </Container>
+          </SortableContext>
+        </Wrapper>
+        {useDragOverlay
+          ? createPortal(
+            <DragOverlay
+              adjustScale={adjustScale}
+              dropAnimation={dropAnimation}
+            >
+              {activeId ? (
+                <Item
+                  value={items[activeIndex]}
+                  handle={handle}
+                  renderItem={renderItem}
+                  wrapperStyle={wrapperStyle({
+                    active: { id: activeId },
+                    index: activeIndex,
+                    isDragging: true,
+                    id: items[activeIndex],
+                  })}
+                  style={getItemStyles({
+                    id: items[activeIndex],
+                    index: activeIndex,
+                    isSorting: activeId !== null,
+                    isDragging: true,
+                    overIndex: -1,
+                    isDragOverlay: true,
+                  })}
+                  dragOverlay
+                />
+              ) : null}
+            </DragOverlay>,
+            document.body
+          )
+          : null}
+      </DndContext>
+      <button onClick={saveData}>save</button>
+    </>
   ) : null;
 }
 
@@ -326,38 +399,41 @@ export function SortableItem({
   });
 
   return (
-    <Item
-      ref={setNodeRef}
-      value={id}
-      disabled={disabled}
-      dragging={isDragging}
-      sorting={isSorting}
-      handle={handle}
-      handleProps={
-        handle
-          ? {
-            ref: setActivatorNodeRef,
-          }
-          : undefined
-      }
-      renderItem={renderItem}
-      index={index}
-      style={style({
-        index,
-        id,
-        isDragging,
-        isSorting,
-        overIndex,
-      })}
-      onRemove={onRemove ? () => onRemove(id) : undefined}
-      transform={transform}
-      transition={transition}
-      wrapperStyle={wrapperStyle?.({ index, isDragging, active, id })}
-      listeners={listeners}
-      data-index={index}
-      data-id={id}
-      dragOverlay={!useDragOverlay && isDragging}
-      {...attributes}
-    />
+    <>
+      <Item
+        ref={setNodeRef}
+        value={id}
+        disabled={disabled}
+        dragging={isDragging}
+        sorting={isSorting}
+        handle={handle}
+        handleProps={
+          handle
+            ? {
+              ref: setActivatorNodeRef,
+            }
+            : undefined
+        }
+        renderItem={renderItem}
+        index={index}
+        style={style({
+          index,
+          id,
+          isDragging,
+          isSorting,
+          overIndex,
+        })}
+        onRemove={onRemove ? () => onRemove(id) : undefined}
+        transform={transform}
+        transition={transition}
+        wrapperStyle={wrapperStyle?.({ index, isDragging, active, id })}
+        listeners={listeners}
+        data-index={index}
+        data-id={id}
+        dragOverlay={!useDragOverlay && isDragging}
+        {...attributes}
+      />
+
+    </>
   );
 }
