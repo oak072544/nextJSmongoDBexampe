@@ -36,6 +36,14 @@ import {
 import { createRange } from '../../utilities';
 import { Item, List, Wrapper } from '../../components';
 
+export interface ServiceShortcut {
+  id: UniqueIdentifier;
+  name: string;
+  link?: string;
+  picture?: string;
+  type: string;
+}
+
 export interface Props {
   activationConstraint?: PointerActivationConstraint;
   animateLayoutChanges?: AnimateLayoutChanges;
@@ -47,7 +55,8 @@ export interface Props {
   getNewIndex?: NewIndexGetter;
   handle?: boolean;
   itemCount?: number;
-  items?: UniqueIdentifier[];
+  /* items?: UniqueIdentifier[]; */
+  items?: ServiceShortcut[];
   measuring?: MeasuringConfiguration;
   modifiers?: Modifiers;
   renderItem?: any;
@@ -143,32 +152,12 @@ export function Sortable({
   wrapperStyle = () => ({}),
 }: Props) {
 
-  const fetchData = async () => {
-    try {
-      let response = await fetch('api/dnd', {
-        method: "GET",
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      if (response.ok) {
-        const data = await response.json();
-        let returnData: UniqueIdentifier[] = data.data;
-        return returnData;
-      } else {
-        console.error('Request failed with status:', response.status);
-        return undefined;
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      return undefined;
-    }
-  }
 
-  const [items, setItems] = useState<UniqueIdentifier[]>(
+  const [items, setItems] = useState<ServiceShortcut[]>(
     () =>
       initialItems ??
-      createRange<UniqueIdentifier>(itemCount, (index) => index + 1)
+      /* createRange<UniqueIdentifier>(itemCount, (index) => index + 1) */
+      []
   );
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const sensors = useSensors(
@@ -185,12 +174,14 @@ export function Sortable({
     })
   );
   const isFirstAnnouncement = useRef(true);
-  const getIndex = (id: UniqueIdentifier) => items.indexOf(id);
+  /* const getIndex = (id: UniqueIdentifier) => items.indexOf(id); */
+  const getIndex = (id: UniqueIdentifier) => items.findIndex((item) => item.id === id);
   const getPosition = (id: UniqueIdentifier) => getIndex(id) + 1;
   const activeIndex = activeId ? getIndex(activeId) : -1;
   const handleRemove = removable
     ? (id: UniqueIdentifier) =>
-      setItems((items) => items.filter((item) => item !== id))
+      /*       setItems((items) => items.filter((item) => item !== id)) */
+      setItems((items) => items.filter((item) => item.id !== id))
     : undefined;
   const announcements: Announcements = {
     onDragStart({ active: { id } }) {
@@ -298,13 +289,15 @@ export function Sortable({
             <Container>
               {items.map((value, index) => (
                 <SortableItem
-                  key={value}
-                  id={value}
+                  key={value.id}
+                  id={value.id}
+                  value={value.name}
+                  picture={value.picture}
                   handle={handle}
                   index={index}
                   style={getItemStyles}
                   wrapperStyle={wrapperStyle}
-                  disabled={isDisabled(value)}
+                  disabled={isDisabled(value.id)}
                   renderItem={renderItem}
                   onRemove={handleRemove}
                   animateLayoutChanges={animateLayoutChanges}
@@ -323,17 +316,18 @@ export function Sortable({
             >
               {activeId ? (
                 <Item
-                  value={items[activeIndex]}
+                  value={items[activeIndex].name}
+                  picture={items[activeIndex].picture}
                   handle={handle}
                   renderItem={renderItem}
                   wrapperStyle={wrapperStyle({
                     active: { id: activeId },
                     index: activeIndex,
                     isDragging: true,
-                    id: items[activeIndex],
+                    id: items[activeIndex].id,
                   })}
                   style={getItemStyles({
-                    id: items[activeIndex],
+                    id: items[activeIndex].id,
                     index: activeIndex,
                     isSorting: activeId !== null,
                     isDragging: true,
@@ -358,6 +352,8 @@ interface SortableItemProps {
   disabled?: boolean;
   getNewIndex?: NewIndexGetter;
   id: UniqueIdentifier;
+  value?: any;
+  picture?: string;
   index: number;
   handle: boolean;
   useDragOverlay?: boolean;
@@ -373,6 +369,8 @@ export function SortableItem({
   getNewIndex,
   handle,
   id,
+  value,
+  picture,
   index,
   onRemove,
   style,
@@ -402,7 +400,8 @@ export function SortableItem({
     <>
       <Item
         ref={setNodeRef}
-        value={id}
+        value={value}
+        picture={picture}
         disabled={disabled}
         dragging={isDragging}
         sorting={isSorting}

@@ -9,8 +9,9 @@ import {
     rectSwappingStrategy,
 } from '@dnd-kit/sortable';
 
-import { Sortable, Props as SortableProps } from './Sortable';
+import { Sortable, Props as SortableProps, ServiceShortcut } from './Sortable';
 import { GridContainer } from '../../components';
+import { link } from 'fs';
 
 const fetchData = async () => {
     let returnData: UniqueIdentifier[] = []
@@ -47,8 +48,25 @@ const props: Partial<SortableProps> = {
 };
 
 export default function Grid() {
-    /* let propData: UniqueIdentifier[] = await fetchData(); */
-    const [data, setData] = useState<UniqueIdentifier[]>([])
+
+    let data: ServiceShortcut[] = [
+        {
+            id: 1,
+            name: "Service 1",
+            link: "https://www.google.com",
+            picture: "/recommendIcon.svg",
+            type: "Service",
+        }
+        ,
+        {
+            id: 2,
+            name: "Service 2",
+            link: "https://www.google.com",
+            picture: "/recommendIcon.svg",
+            type: "Service",
+        }
+    ]
+    /* const [data, setData] = useState<UniqueIdentifier[]>([])
     const [isLoading, setLoading] = useState(true)
 
     useEffect(() => {
@@ -62,7 +80,7 @@ export default function Grid() {
     }, [])
 
     if (isLoading) return <p>Loading...</p>
-    if (!data) return <p>No profile data</p>
+    if (!data) return <p>No profile data</p> */
 
     return (
         <>

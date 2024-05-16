@@ -1,11 +1,13 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
-import type {DraggableSyntheticListeners} from '@dnd-kit/core';
-import type {Transform} from '@dnd-kit/utilities';
+import type { DraggableSyntheticListeners } from '@dnd-kit/core';
+import type { Transform } from '@dnd-kit/utilities';
 
-import {Handle, Remove} from './components';
+import { Handle, Remove } from './components';
 
 import styles from './Item.module.css';
+
+import Image from 'next/image'
 
 export interface Props {
   dragOverlay?: boolean;
@@ -38,6 +40,7 @@ export interface Props {
     transition: Props['transition'];
     value: Props['value'];
   }): React.ReactElement;
+  picture?: string;
 }
 
 export const Item = React.memo(
@@ -62,6 +65,7 @@ export const Item = React.memo(
         transform,
         value,
         wrapperStyle,
+        picture,
         ...props
       },
       ref
@@ -139,6 +143,7 @@ export const Item = React.memo(
             {...props}
             tabIndex={!handle ? 0 : undefined}
           >
+            <Image src={picture ? picture : ""} alt={`${value} icon`} className=" " width={50} height={50} />
             {value}
             <span className={styles.Actions}>
               {onRemove ? (
