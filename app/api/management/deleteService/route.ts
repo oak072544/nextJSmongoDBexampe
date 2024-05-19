@@ -2,6 +2,26 @@ import clientPromise from "../../../../lib/mongodb";
 import { ObjectId } from "mongodb";
 import { NextRequest, NextResponse } from "next/server";
 
+/**
+ * @swagger
+ * /api/management/deleteService:
+ *   delete:
+ *     summary: Delete service by id
+ *     tags:
+ *       - management
+ *     parameters:
+ *       - name: id
+ *         in: query
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Delete service by id
+ *       404:
+ *         description: Missing id
+ */
+
 export async function DELETE(request: NextRequest) {
     try {
         const client = await clientPromise;
@@ -11,7 +31,7 @@ export async function DELETE(request: NextRequest) {
             return NextResponse.json({ error: "Missing id" });
         }
         const post = await db.collection("service").deleteOne({
-            _id: new ObjectId(id)
+            _id: new ObjectId(id),
         });
         return NextResponse.json(post);
     } catch (error) {

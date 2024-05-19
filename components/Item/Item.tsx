@@ -143,7 +143,7 @@ export const Item = React.memo(
             {...props}
             tabIndex={!handle ? 0 : undefined}
           >
-            <Image src={picture ? picture : ""} alt={`${value} icon`} className=" " width={50} height={50} />
+            {picture && <Image src={picture} alt={`${value} icon`} className=" " width={50} height={50} onError={(e) => console.error(e)} />}
             {value}
             <span className={styles.Actions}>
               {onRemove ? (

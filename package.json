@@ -16,9 +16,11 @@
     "mongodb": "^6.3.0",
     "next": "^14.0.3",
     "next-auth": "^4.24.5",
+    "next-swagger-doc": "^0.4.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-grid-layout": "^1.4.4",
+    "swagger-ui-react": "^5.17.10",
     "swr": "^2.2.4"
   },
   "devDependencies": {
@@ -26,6 +28,7 @@
     "@types/react": "18.2.38",
     "@types/react-dom": "^18.3.0",
     "@types/react-grid-layout": "^1.3.5",
+    "@types/swagger-ui-react": "^4.18.3",
     "autoprefixer": "^10.4.19",
     "eslint": "8.54.0",
     "postcss": "^8.4.38",

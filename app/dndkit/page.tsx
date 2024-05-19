@@ -13,7 +13,7 @@ import { Sortable, Props as SortableProps, ServiceShortcut } from './Sortable';
 import { GridContainer } from '../../components';
 import { link } from 'fs';
 
-const fetchData = async () => {
+/* const fetchData = async () => {
     let returnData: UniqueIdentifier[] = []
     try {
         let response = await fetch('api/dnd', {
@@ -35,7 +35,7 @@ const fetchData = async () => {
         console.error('Error fetching data:', error);
         return returnData
     }
-}
+} */
 
 const props: Partial<SortableProps> = {
     adjustScale: true,
@@ -49,13 +49,13 @@ const props: Partial<SortableProps> = {
 
 export default function Grid() {
 
-    let data: ServiceShortcut[] = [
+    /* let data: ServiceShortcut[] = [
         {
             id: 1,
             name: "Service 1",
             link: "https://www.google.com",
-            picture: "/recommendIcon.svg",
-            type: "Service",
+            picture: "/disabledByDefault.svg",
+            type: "service",
         }
         ,
         {
@@ -63,10 +63,17 @@ export default function Grid() {
             name: "Service 2",
             link: "https://www.google.com",
             picture: "/recommendIcon.svg",
-            type: "Service",
+            type: "service",
+        },
+        {
+            id: 3,
+            name: "Folder",
+            picture: "/folder.svg",
+            type: "folder",
         }
-    ]
-    /* const [data, setData] = useState<UniqueIdentifier[]>([])
+    ] */
+
+    const [data, setData] = useState<ServiceShortcut[]>([])
     const [isLoading, setLoading] = useState(true)
 
     useEffect(() => {
@@ -80,7 +87,7 @@ export default function Grid() {
     }, [])
 
     if (isLoading) return <p>Loading...</p>
-    if (!data) return <p>No profile data</p> */
+    if (!data) return <p>No profile data</p>
 
     return (
         <>

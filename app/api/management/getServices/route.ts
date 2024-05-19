@@ -11,3 +11,17 @@ export async function GET(request: Request) {
         return Response.json(e);
     }
 }
+
+/**
+ * @swagger
+ * /api/management/getServices:
+ *   get:
+ *     summary: Get all services
+ *     tags:
+ *       - management
+ *     responses:
+ *       200:
+ *         description: Get all services
+ *       404:
+ *         description: Missing id
+ */

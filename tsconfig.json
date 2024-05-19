@@ -22,7 +22,19 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "baseUrl": ".", // This must be specified if "paths" is.
+    "paths": {
+      "@lib/*": [
+        "./lib/*"
+      ], // Replace "path/to/lib" with the actual path to the lib directory in your project.
+      "@components/*": [
+        "./components/*"
+      ],
+      "@utilities/*": [
+        "./utilities/*"
+      ]
+    }
   },
   "include": [
     "next-env.d.ts",
