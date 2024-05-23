@@ -63,14 +63,23 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         return {
           ...token,
-          name: user.username,
+          name: user.username
         };
 
       }
       return token;
     },
     async session({ session, token, user }) {
-      //console.log("session callback", { session, token, user });
+
+      /*  if (user) {
+         return {
+           ...session,
+           user: {
+             ...user,
+             name: user.username,
+           },
+         };
+       } */
       return session;
     },
   },
