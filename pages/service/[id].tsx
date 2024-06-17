@@ -178,7 +178,9 @@ function EditPost({
           />
         </div>
 
-        <div className="form-group"> {/*Description*/}
+        <div className="form-group">
+          {" "}
+          {/*Description*/}
           <label htmlFor="description">Description</label>
           <textarea
             name="Description"
@@ -215,7 +217,9 @@ function EditPost({
           />
         </div>
 
-        <div className="form-group"> {/*Role*/}
+        <div className="form-group">
+          {" "}
+          {/*Role*/}
           <label htmlFor="role">Role</label>
           {Object.keys(serviceRole).map((r, index) => (
             <div key={index}>
@@ -258,7 +262,9 @@ function EditPost({
           />
         </div>
 
-        <div className="form-group"> {/*Enable*/}
+        <div className="form-group">
+          {" "}
+          {/*Enable*/}
           <label>Enable</label>
           <input
             type="checkbox"

@@ -42,7 +42,8 @@
     "**/*.tsx",
     "lib/mongodb.js",
     "unused/api/getPosts/index.ts",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "app/api/auth/[...nextauth]/route.ts"
   ],
   "exclude": [
     "node_modules"

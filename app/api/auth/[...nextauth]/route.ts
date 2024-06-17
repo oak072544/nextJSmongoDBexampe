@@ -1,3 +1,4 @@
+import { metadata } from './../../../layout';
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -34,24 +35,28 @@ export const authOptions: NextAuthOptions = {
             }),
           }
         );
-        const user = await res.json();
+        let user = await res.json();
 
         if ((user.api_message = "Authentication success")) {
           console.log(user.userInfo.username);
           let permisssion: any = await fetch(
-            "http://localhost:3000/api/getUser?username=" +
+            "http://localhost:3000/api/management/getUser?username=" +
             user.userInfo.username
           );
           permisssion = await permisssion.json();
           console.log(permisssion.username);
           if (permisssion.username == user.userInfo.username) {
-            return user.userInfo;
+            user = {
+              ...user,
+              management_role: permisssion.role
+            }
+            return user
           } else {
-            return null;
+            return user
           }
         }
         else {
-          return null;
+          throw new Error("Invalid username or password");
         }
       },
     }),
@@ -59,27 +64,28 @@ export const authOptions: NextAuthOptions = {
   debug: process.env.NODE_ENV == "development",
   callbacks: {
     async jwt({ token, user, session }) {
-      //console.log("jwt callback", { token, user, session });
+      console.log("jwt callback", { token, user, session });
       if (user) {
         return {
           ...token,
-          name: user.username
+          name: user.userInfo.username,
+          account_type: user.userInfo.account_type,
+          management_role: user.management_role || "",
         };
 
       }
       return token;
     },
     async session({ session, token, user }) {
-
-      /*  if (user) {
-         return {
-           ...session,
-           user: {
-             ...user,
-             name: user.username,
-           },
-         };
-       } */
+      console.log("session callback", { session, token, user });
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          account_type: token.account_type,
+          menagement_role: token?.management_role,
+        },
+      };
       return session;
     },
   },
